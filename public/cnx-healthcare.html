@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CNX Healthcare — Healthier. Happier.</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --b:#0066CC;--b2:#1A7AE0;--b3:#3A7FE8;--b4:#6EA8F5;--b5:#B8D4FB;--b0:#E8F2FF;
+  --bdk:#004499;--bdkk:#002266;
+  --ink:#1d1d1f;--mid:#6e6e73;--soft:#86868b;--pale:#f5f5f7;--off:#fbfbfd;
+  --line:rgba(0,0,0,.1);--line2:rgba(0,0,0,.06);
+  --white:#fff;
+  --f:'Inter',-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{background:var(--white);color:var(--ink);font-family:var(--f);overflow-x:hidden;cursor:none}
+
+/* ─── CURSOR ─── */
+#CW{position:fixed;top:0;left:0;pointer-events:none;z-index:9999}
+#CO{position:absolute;width:40px;height:40px;border:1.5px solid rgba(0,102,204,.45);border-radius:50%;transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .25s,background .25s,opacity .3s;opacity:0}
+#CD{position:absolute;width:5px;height:5px;background:var(--b);border-radius:50%;transform:translate(-50%,-50%);transition:background .2s}
+body:hover #CO{opacity:1}
+.ch #CO{width:56px;height:56px;border-color:var(--b);background:rgba(0,102,204,.04)}
+.ch #CD{background:var(--b2)}
+
+/* ─── NAV ─── */
+#nav{position:fixed;top:0;left:0;right:0;z-index:900;height:48px;
+  background:rgba(2,12,27,.75);backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:center;transition:all .4s}
+#nav.lt{background:rgba(255,255,255,.9);border-bottom-color:rgba(0,0,0,.08)}
+#nav.lt .nl{color:rgba(29,29,31,.6)}
+#nav.lt .nl:hover{color:var(--ink)}
+#nav.lt .nb{color:var(--ink)}
+#nav.lt .nbtn{background:var(--b);color:#fff;border-color:transparent}
+.nw{width:100%;max-width:1000px;padding:0 28px;display:flex;align-items:center;justify-content:space-between}
+.nb{font-size:14px;font-weight:700;color:#fff;display:flex;align-items:center;gap:9px;text-decoration:none;cursor:none;transition:color .3s;letter-spacing:-.2px}
+.nbm{width:26px;height:26px;background:var(--b);border-radius:7px;display:grid;place-items:center;flex-shrink:0}
+.nbm svg{width:14px;height:14px}
+.nls{display:flex;gap:28px;list-style:none}
+.nl{font-size:13px;font-weight:400;color:rgba(255,255,255,.65);text-decoration:none;cursor:none;transition:color .2s}
+.nl:hover{color:#fff}
+.nbtn{font-size:12px;font-weight:600;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.18);padding:7px 18px;border-radius:980px;cursor:none;font-family:var(--f);transition:all .25s}
+.nbtn:hover{background:rgba(255,255,255,.2)}
+
+/* ─── HERO ─── */
+.hero{
+  min-height:100vh;
+  background:#020C1B;
+  padding-top:48px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;overflow:hidden;position:relative;
+}
+/* Layered aurora background */
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 70% 60% at 20% 50%, rgba(0,80,255,.18) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 30%, rgba(0,160,255,.14) 0%, transparent 55%),
+    radial-gradient(ellipse 80% 40% at 50% 100%, rgba(0,50,180,.2) 0%, transparent 60%);
+  pointer-events:none;
+}
+.hero::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 100% 50% at 50% 0%, rgba(0,120,255,.1) 0%, transparent 50%);
+  pointer-events:none;
+}
+/* Full-bleed canvas for aurora / particles */
+#hcv{position:absolute;inset:0;width:100%;height:100%;display:block}
+
+/* Grid overlay — subtle depth */
+.hero-grid{
+  position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+  background-size:80px 80px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+}
+
+.hero-content{
+  position:relative;z-index:2;
+  padding:0 32px;
+  display:flex;flex-direction:column;align-items:center;
+  max-width:1000px;
+}
+
+.h-chip{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.14);
+  color:rgba(255,255,255,.75);
+  font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;
+  padding:8px 18px;border-radius:980px;
+  margin-bottom:36px;
+  backdrop-filter:blur(10px);
+  opacity:0;animation:au .8s .15s forwards;
+}
+.cpulse{
+  width:6px;height:6px;border-radius:50%;background:#4FC3F7;
+  animation:cp 2s infinite;
+  box-shadow:0 0 6px #4FC3F7;
+}
+@keyframes cp{
+  0%,100%{opacity:1;box-shadow:0 0 6px #4FC3F7,0 0 0 0 rgba(79,195,247,.5)}
+  60%{opacity:.4;box-shadow:0 0 6px #4FC3F7,0 0 0 8px rgba(79,195,247,0)}
+}
+
+/* Giant headline — white on dark */
+.h-name{
+  font-size:clamp(64px,11vw,140px);
+  font-weight:800;
+  letter-spacing:-5px;
+  line-height:.95;
+  color:#fff;
+  margin-bottom:0;
+  opacity:0;animation:au .9s .3s forwards;
+}
+.h-name .line1{display:block}
+.h-name .grad{
+  display:block;
+  background:linear-gradient(90deg,#60B4FF 0%,#A78BFA 40%,#60B4FF 100%);
+  background-size:200% 100%;
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  animation:shimmer 4s linear infinite, au .9s .45s forwards;
+  opacity:0;
+}
+@keyframes shimmer{0%{background-position:200%}100%{background-position:-200%}}
+
+.h-tag{
+  font-size:clamp(18px,2.2vw,26px);
+  font-weight:300;
+  color:rgba(255,255,255,.45);
+  margin-top:20px;letter-spacing:-.3px;
+  opacity:0;animation:au .9s .65s forwards;
+}
+
+.h-ctas{
+  display:flex;gap:14px;justify-content:center;margin-top:40px;flex-wrap:wrap;
+  opacity:0;animation:au .9s .8s forwards;
+}
+.hb1{
+  font-size:16px;font-weight:500;
+  background:#fff;color:#020C1B;
+  border:none;padding:13px 28px;border-radius:980px;
+  cursor:none;font-family:var(--f);transition:all .25s;
+  box-shadow:0 0 32px rgba(255,255,255,.15);
+}
+.hb1:hover{background:#e8f0ff;transform:translateY(-2px);box-shadow:0 4px 32px rgba(255,255,255,.2)}
+.hb2{
+  font-size:16px;font-weight:400;
+  color:rgba(255,255,255,.6);background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.14);
+  padding:13px 28px;border-radius:980px;
+  cursor:none;font-family:var(--f);transition:all .25s;
+  display:flex;align-items:center;gap:5px;
+}
+.hb2::after{content:'›';font-size:20px}
+.hb2:hover{background:rgba(255,255,255,.12);color:#fff}
+
+/* Floating stat chips */
+.h-stats{
+  display:flex;gap:24px;margin-top:64px;flex-wrap:wrap;justify-content:center;
+  opacity:0;animation:au .9s 1s forwards;
+}
+.hstat{
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:16px;padding:18px 28px;text-align:center;
+  backdrop-filter:blur(12px);
+  transition:border-color .3s,background .3s,transform .3s;cursor:none;
+}
+.hstat:hover{border-color:rgba(96,180,255,.4);background:rgba(96,180,255,.08);transform:translateY(-4px)}
+.hstat-n{
+  font-size:clamp(32px,4vw,48px);font-weight:800;letter-spacing:-2px;
+  background:linear-gradient(135deg,#fff 0%,#60B4FF 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  line-height:1;display:block;
+}
+.hstat-l{font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-top:5px}
+
+/* Scroll hint */
+.h-scroll{
+  position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
+  z-index:2;display:flex;flex-direction:column;align-items:center;gap:8px;
+  color:rgba(255,255,255,.2);font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  opacity:0;animation:au .8s 1.4s forwards;
+}
+.h-scroll-line{
+  width:1px;height:44px;
+  background:linear-gradient(to bottom,transparent,rgba(96,180,255,.6));
+  animation:scrollpulse 2s ease-in-out infinite;
+}
+@keyframes scrollpulse{0%,100%{opacity:.4;transform:scaleY(1)}50%{opacity:1;transform:scaleY(1.1)}}
+@keyframes au{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+
+/* ─── HIGHLIGHTS STRIP ─── */
+.hlstrip{background:var(--pale);border-top:1px solid var(--line);display:flex;justify-content:center;flex-wrap:wrap}
+.hli{flex:1;min-width:180px;max-width:280px;padding:26px 20px;text-align:center;
+  border-right:1px solid var(--line);cursor:none;transition:background .2s}
+.hli:last-child{border-right:none}
+.hli:hover{background:rgba(0,0,0,.03)}
+.hli-ic{font-size:26px;margin-bottom:8px}
+.hli-t{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.hli-s{font-size:12px;font-weight:300;color:var(--soft)}
+
+/* ─── MARQUEE ─── */
+.mq{background:var(--b);padding:12px 0;overflow:hidden}
+.mq-t{display:flex;animation:mqs 36s linear infinite;white-space:nowrap}
+.mqi{display:flex;align-items:center;gap:20px;padding:0 20px;
+  font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.7)}
+.mqd{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.5)}
+@keyframes mqs{to{transform:translateX(-50%)}}
+
+/* NOTE: This file is large. If the full paste is truncated by tool limits,
+   I will split the rest (CSS + body + script) into follow-up patches. */
+</style>
+</head>
+<body>
+<div id="CW"><div id="CO"></div><div id="CD"></div></div>
+
+<nav id="nav">
+  <div class="nw">
+    <a class="nb" href="#">
+      <div class="nbm"><svg viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+      CNX Healthcare
+    </a>
+    <ul class="nls">
+      <li><a class="nl" href="#spec">Specialities</a></li>
+      <li><a class="nl" href="#products">Products</a></li>
+      <li><a class="nl" href="#team">Leadership</a></li>
+      <li><a class="nl" href="#contact">Contact</a></li>
+    </ul>
+    <button class="nbtn">Careers</button>
+  </div>
+</nav>
+
+<section class="hero">
+  <canvas id="hcv"></canvas>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="h-chip"><span class="cpulse"></span>Est. 2016 · Mumbai · CNS Specialists</div>
+    <h1 class="h-name">
+      <span class="line1">Healthier.</span>
+      <span class="grad">Happier.</span>
+    </h1>
+    <p class="h-tag">Towards a healthier and happier world.</p>
+    <div class="h-ctas">
+      <button class="hb1" onclick="document.getElementById('products')?.scrollIntoView({behavior:'smooth'})">Explore Products</button>
+      <button class="hb2" onclick="document.getElementById('about')?.scrollIntoView({behavior:'smooth'})">Our Story</button>
+    </div>
+    <div class="h-stats">
+      <div class="hstat"><span class="hstat-n">40+</span><div class="hstat-l">Years Expertise</div></div>
+      <div class="hstat"><span class="hstat-n">250+</span><div class="hstat-l">Products</div></div>
+      <div class="hstat"><span class="hstat-n">6</span><div class="hstat-l">Divisions</div></div>
+      <div class="hstat"><span class="hstat-n">7</span><div class="hstat-l">Specialities</div></div>
+    </div>
+  </div>
+  <div class="h-scroll"><div class="h-scroll-line"></div>Scroll</div>
+</section>
+
+<div class="hlstrip">
+  <div class="hli fade"><div class="hli-ic">🧠</div><div class="hli-t">CNS Specialists</div><div class="hli-s">Psychiatry & Neurology</div></div>
+  <div class="hli fade d1"><div class="hli-ic">💊</div><div class="hli-t">250+ Products</div><div class="hli-s">6 Divisions</div></div>
+  <div class="hli fade d2"><div class="hli-ic">🏥</div><div class="hli-t">7 Specialities</div><div class="hli-s">Full therapeutic coverage</div></div>
+  <div class="hli fade d3"><div class="hli-ic">📍</div><div class="hli-t">Mumbai, 2016</div><div class="hli-s">Dadar (W), Shivaji Park</div></div>
+</div>
+
+<div class="mq">
+  <div class="mq-t">
+    <div class="mqi">CNX Division<span class="mqd"></span></div><div class="mqi">CNX Plus<span class="mqd"></span></div><div class="mqi">CNX Prime<span class="mqd"></span></div>
+  </div>
+</div>
+
+<script>
+// Minimal script: cursor + canvas animation from your original.
+var CO=document.getElementById('CO'),CD=document.getElementById('CD');
+var mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;CD.style.left=mx+'px';CD.style.top=my+'px'});
+(function loop(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;CO.style.left=rx+'px';CO.style.top=ry+'px';requestAnimationFrame(loop)})();
+var _cur=document.querySelectorAll('a,button,.hli,.sc,.pc,.dc,.ccc');
+for(var _ci=0;_ci<_cur.length;_ci++){
+  (function(el){
+    el.addEventListener('mouseenter',function(){document.body.classList.add('ch')});
+    el.addEventListener('mouseleave',function(){document.body.classList.remove('ch')});
+  })(_cur[_ci]);
+}
+(function(){
+  var cv=document.getElementById('hcv');if(!cv)return;
+  var c=cv.getContext('2d');
+  var W=0,H=0,t=0,pts=[],orbs=[],ready=false;
+  var resize=function(){
+    var w=cv.offsetWidth,h=cv.offsetHeight;
+    if(!w||!h)return;
+    W=cv.width=w; H=cv.height=h; ready=true;
+    pts=[];
+    var n=Math.max(40,Math.floor(W*H/4000));
+    for(var i=0;i<n;i++)pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.18,vy:(Math.random()-.5)*.18,r:Math.random()*1.8+.4,opacity:Math.random()*.5+.25,hue:Math.random()>.5?220:200});
+    orbs=[
+      {ox:W*.2,oy:H*.4,r:W*.35,spx:.0003,spy:.0002,hue:210,sat:100,opa:.13},
+      {ox:W*.8,oy:H*.3,r:W*.3,spx:.00015,spy:.00025,hue:230,sat:90,opa:.11},
+      {ox:W*.5,oy:H*.8,r:W*.4,spx:.0002,spy:.00015,hue:200,sat:100,opa:.09},
+      {ox:W*.1,oy:H*.15,r:W*.28,spx:.0004,spy:.0003,hue:190,sat:80,opa:.07}
+    ];
+  };
+  var draw=function(){
+    requestAnimationFrame(draw);
+    if(!ready||!W||!H)return;
+    t+=.008; c.clearRect(0,0,W,H);
+    for(var i=0;i<orbs.length;i++){
+      var o=orbs[i];
+      var x=o.ox+Math.sin(t*o.spx*100+i)*W*.08;
+      var y=o.oy+Math.cos(t*o.spy*100+i)*H*.06;
+      var g=c.createRadialGradient(x,y,0,x,y,o.r);
+      g.addColorStop(0,'hsla('+o.hue+','+o.sat+'%,62%,'+o.opa+')');
+      g.addColorStop(.5,'hsla('+(o.hue+15)+','+o.sat+'%,52%,'+(o.opa*.35)+')');
+      g.addColorStop(1,'hsla('+(o.hue+30)+','+o.sat+'%,42%,0)');
+      c.fillStyle=g; c.fillRect(0,0,W,H);
+    }
+  };
+  setTimeout(function(){resize();draw();},50);
+  new ResizeObserver(resize).observe(cv);
+})();
+</script>
+</body>
+</html>
