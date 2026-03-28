@@ -1,25 +1,51 @@
-import { readFile } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
+import path from "node:path";
 
 export const runtime = "nodejs";
 
-const HTML_PATH =
+// Serve the HTML from the repo (works on Vercel).
+const PUBLIC_HTML_PATH = path.join(process.cwd(), "public", "cnx-healthcare.html");
+
+// Local-only fallback (your current full file).
+const LOCAL_FALLBACK_HTML_PATH =
   "C:\\Users\\itzar\\Downloads\\cnx_final (1).html";
 
+async function readHtmlFrom(filePath: string) {
+  const html = await readFile(filePath, "utf-8");
+  return html;
+}
+
 export async function GET() {
+  // Try repo HTML first (the one that should be committed to Git).
   try {
-    const html = await readFile(HTML_PATH, "utf-8");
+    const repoStat = await stat(PUBLIC_HTML_PATH);
+    if (repoStat.size >= 50000) {
+      const html = await readHtmlFrom(PUBLIC_HTML_PATH);
+      return new Response(html, {
+        headers: {
+          "Content-Type": "text/html; charset=utf-8",
+          "Cache-Control": "no-store",
+        },
+      });
+    }
+  } catch {
+    // ignore; we'll attempt the local fallback in dev
+  }
+
+  // If repo HTML is missing/truncated, fall back to Downloads in dev only.
+  if (process.env.NODE_ENV !== "production") {
+    const html = await readHtmlFrom(LOCAL_FALLBACK_HTML_PATH);
     return new Response(html, {
       headers: {
         "Content-Type": "text/html; charset=utf-8",
-        // Prevent caching while you iterate locally
         "Cache-Control": "no-store",
       },
     });
-  } catch (err) {
-    return new Response(
-      `Failed to load HTML file from server path: ${HTML_PATH}`,
-      { status: 500 }
-    );
   }
+
+  return new Response(
+    "CNX HTML not found in repo. Please ensure `public/cnx-healthcare.html` contains the full HTML before deploying.",
+    { status: 500 }
+  );
 }
 
